@@ -1,0 +1,5 @@
+Notas del proyecto
+==================
+El login falla cuando el correo tiene mayusculas.
+Reportado en el ticket 412.
+Hay que normalizar antes de comparar contra la base.

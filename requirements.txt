@@ -1,0 +1,1 @@
+pydantic-ai-slim[google]>=2.0
