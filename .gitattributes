@@ -1,0 +1,2 @@
+# El PDF es binario: sin esto, autocrlf lo corrompe al clonar en Windows.
+*.pdf binary
