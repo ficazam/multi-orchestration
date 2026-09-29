@@ -28,17 +28,33 @@ ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models?key=%s"
 
 
 def cargar_env():
-    """Mismo .env que taller/config.py, con la misma regla: el entorno gana."""
+    """Mismo .env que taller/config.py, con la misma regla: el entorno gana.
+
+    Devuelve (existe, ruta, nombres_leidos, impostores).
+    """
     archivo = RAIZ / ".env"
-    if not archivo.exists():
-        return False
+    # Nombres reales de la carpeta: en Windows (RAIZ / ".ENV").exists() es
+    # True si existe ".env", y eso daria un aviso falso.
+    reales = {p.name for p in RAIZ.iterdir() if p.is_file()}
+    impostores = [n for n in (".env.txt", "env", "env.txt") if n in reales]
+
+    if ".env" not in reales:
+        return False, archivo, [], impostores
+
+    nombres = []
     for linea in archivo.read_text(encoding="utf-8").splitlines():
         linea = linea.strip()
         if not linea or linea.startswith("#") or "=" not in linea:
             continue
         clave, _, valor = linea.partition("=")
-        os.environ.setdefault(clave.strip(), valor.strip().strip("\"'"))
-    return True
+        clave = clave.strip()
+        if clave.startswith("export "):
+            clave = clave[len("export "):].strip()
+        if clave.startswith("$env:"):
+            clave = clave[len("$env:"):].strip()
+        nombres.append(clave)
+        os.environ.setdefault(clave, valor.strip().strip("\"'"))
+    return True, archivo, nombres, impostores
 
 
 def tapada(v):
@@ -48,9 +64,27 @@ def tapada(v):
 def main():
     print("\n=== Modelos disponibles para tu llave ===\n")
 
-    hay_env = cargar_env()
-    print("[ .env ] %s" % ("leido" if hay_env else "no existe (uso variables "
-                                                   "de entorno)"))
+    existe, ruta, nombres, impostores = cargar_env()
+    print("[ .env ] busco en: %s" % ruta)
+    if existe:
+        print("[ .env ] leido. Variables que encontre: %s"
+              % (", ".join(nombres) if nombres else "NINGUNA (archivo vacio "
+                                                    "o mal formateado)"))
+        esperadas = {"GEMINI_API_KEY", "GOOGLE_API_KEY"}
+        if not esperadas & set(nombres):
+            print("\n  El .env existe pero no trae GEMINI_API_KEY.")
+            print("  La linea tiene que ser exactamente:")
+            print("      GEMINI_API_KEY=AIza...")
+            print("  Sin 'export', sin comillas, sin espacios antes del =.")
+    else:
+        print("[ .env ] NO EXISTE en esa ruta.")
+        print("  Crealo desde la terminal, en la raiz del repo:")
+        print("      printf 'MODO=gemini\\nGEMINI_API_KEY=tu_llave\\n' > .env")
+    if impostores:
+        print("\n  OJO: existe %s. El archivo tiene que llamarse '.env' "
+              "exacto." % " y ".join(impostores))
+        print("  Windows esconde las extensiones: si lo creaste con el "
+              "Explorador, probablemente es .env.txt.")
 
     # OJO: este es el mismo orden de precedencia que usa Pydantic AI.
     # GOOGLE_API_KEY le gana a GEMINI_API_KEY. Es la trampa numero uno:

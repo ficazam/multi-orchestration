@@ -32,15 +32,32 @@ from pydantic_ai.usage import UsageLimits
 # `export MODO=test` de un solo uso le gana al .env sin editarlo.
 
 def _cargar_env():
-    archivo = pathlib.Path(__file__).resolve().parent.parent / ".env"
+    raiz = pathlib.Path(__file__).resolve().parent.parent
+    archivo = raiz / ".env"
+
     if not archivo.exists():
+        # Windows esconde las extensiones: "Nuevo > Documento de texto"
+        # crea .env.txt y nadie lo ve. Avisamos en vez de callarnos.
+        reales = {p.name for p in raiz.iterdir() if p.is_file()}
+        for impostor in (".env.txt", "env", "env.txt"):
+            if impostor in reales:
+                print("AVISO: encontre '%s' pero el archivo tiene que "
+                      "llamarse '.env' exacto." % impostor)
+                break
         return
+
     for linea in archivo.read_text(encoding="utf-8").splitlines():
         linea = linea.strip()
         if not linea or linea.startswith("#") or "=" not in linea:
             continue
         clave, _, valor = linea.partition("=")
-        os.environ.setdefault(clave.strip(), valor.strip().strip("\"'"))
+        clave = clave.strip()
+        # Si copiaron la linea del README con "export" delante, quitalo.
+        if clave.startswith("export "):
+            clave = clave[len("export "):].strip()
+        if clave.startswith("$env:"):
+            clave = clave[len("$env:"):].strip()
+        os.environ.setdefault(clave, valor.strip().strip("\"'"))
 
 
 _cargar_env()
