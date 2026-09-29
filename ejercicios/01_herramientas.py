@@ -76,7 +76,7 @@ def buscar_texto(patron: str) -> str:
 # ---------------------------------------------------------------------------
 # HERRAMIENTA 2  --  TAREA 3: escribela tu
 # ---------------------------------------------------------------------------
-# Descomenta y completa. El docstring es lo que mas importa.
+# Descomenta y completa. 
 #
 # @agente.tool_plain
 # def contar_lineas(ruta: str) -> str:

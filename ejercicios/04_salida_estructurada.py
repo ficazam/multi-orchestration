@@ -64,7 +64,7 @@ TAREAS  (18 min)
    caracteres de prosa del ejercicio 3. Eso es lo que entra al historial
    del padre en cada vuelta.
 
-6. Para tu MVP: cual de tus subagentes deberia devolver un objeto en vez
+6. Cual de tus subagentes deberia devolver un objeto en vez
    de un parrafo? Pista: todos los que alimentan una decision del padre.
 """
 

@@ -18,11 +18,11 @@ DENTRO de una herramienta del orquestador.
 Para el orquestador eso es una herramienta cualquiera. No sabe que por
 dentro corrio otro agente con su propio bucle.
 
-POR QUE IMPORTA (y no es porque "suene organizado"):
+POR QUE IMPORTA:
 
   1. AISLAMIENTO DE CONTEXTO. El subagente puede quemar 40.000 tokens
-     leyendo archivos y devolver 200 palabras. Esos 40.000 NUNCA entran
-     al historial del orquestador. Es la razon principal.
+     leyendo archivos y devolver 200 palabras. Esos 40.000 no entran
+     al historial del orquestador.
 
   2. MENOS HERRAMIENTAS POR AGENTE. Cada agente elige entre 2 o 3 opciones
      en vez de 15. Menos decisiones equivocadas por paso.
@@ -44,7 +44,7 @@ TAREAS  (25 min)
 2. TAREA PRINCIPAL: agrega el segundo subagente, el `escritor`.
    Esta todo marcado con TODO abajo. Son tres pasos:
       a) crear el Agent
-      b) darle su herramienta (escribir_archivo)
+      b) darle su herramienta
       c) registrarlo como herramienta del orquestador con @orquestador.tool
 
 3. Cambia el OBJETIVO a algo que necesite los dos:
@@ -150,15 +150,12 @@ def listar_archivos(ruta: str = ".") -> str:
 #       - cuanto mide su respuesta: la va a leer el orquestador, se breve
 #
 # b) SU UNICA HERRAMIENTA: escribir_archivo(ruta, contenido).
-#    La implementacion ya existe: es `_escribir`, importado arriba. Lo que
-#    escribes tu es el registro y el DOCSTRING, que es lo que el modelo lee
-#    para decidir. Como en el ejercicio 1: que devuelve, que pasa si el
-#    archivo ya existe, que no acepta.
+#    Escribe el registro y el DOCSTRING, que es lo que el modelo lee
+#    para decidir. 
 #
-#    Dale SOLO esa. Si de paso le das leer_archivo, deja de ser un escritor
+#    Dale SOLO esa. Si le das leer_archivo, deja de ser un escritor
 #    y el aislamiento de permisos se te cae.
 #
-# (el paso c va mas abajo, con las herramientas del orquestador)
 # ===========================================================================
 
 
@@ -203,7 +200,7 @@ async def explorar(ctx: RunContext[None], pregunta: str) -> str:
 # Mira `explorar` ahi arriba: es el patron completo en siete lineas. El tuyo
 # se llama `escribir` y recibe (ctx, ruta, contenido).
 #
-# Cuatro cosas tiene que tener, y las cuatro importan:
+# Cuatro cosas tiene que tener:
 #
 #   1. @orquestador.tool  --  `tool`, no `tool_plain`. Necesitas el ctx.
 #   2. Un docstring que le diga al orquestador CUANDO usarlo. Pista: solo
@@ -213,7 +210,7 @@ async def explorar(ctx: RunContext[None], pregunta: str) -> str:
 #   4. CONTEO["escritor"] = len(resultado.all_messages())  --  alimenta el
 #      reporte del final. Es la linea que te deja VER el aislamiento.
 #
-# Devuelve resultado.output, no el resultado completo.
+# Devuelve resultado.output.
 # ---------------------------------------------------------------------------
 
 

@@ -41,8 +41,8 @@ TAREAS  (10 min)
    Lee el mensaje de error. Ese tope es lo unico que separa un bug de
    una factura.
 
-5. Pregunta para el hackathon: si tu MVP necesita 30 pasos, que le pasa
-   al historial? Y al costo? Esa respuesta es por que existen los
+5. Pregunta: si tu MVP necesita 30 pasos, que le pasa
+   al historial? Y al costo? Esa respuesta es la razon por la que existen los
    subagentes del ejercicio 3.
 """
 

@@ -85,7 +85,7 @@ from taller.herramientas import (
 # DOS SUBAGENTES QUE NO DEPENDEN UNO DEL OTRO
 # ===========================================================================
 # Uno mira el codigo y las notas; el otro mira la carpeta docs/. Ninguno
-# necesita lo que encontro el otro: por eso pueden correr a la vez.
+# necesita lo que encontro el otro y por eso pueden correr a la vez.
 
 explorador_codigo = Agent(
     modelo(),
@@ -122,7 +122,7 @@ def buscar_en_docs(ruta: str = "docs") -> str:
     Devuelve un nombre por linea. Devuelve texto que empieza con 'ERROR:'
     si la ruta no existe.
     """
-    # TODO (tarea 3): descomenta esto para simular un subagente que se cae.
+    # TODO (tarea 3): descomenta esto para simular un subagente que se cae:
     # raise RuntimeError("se cayo la herramienta de docs (simulado)")
     return _listar(ruta)
 
