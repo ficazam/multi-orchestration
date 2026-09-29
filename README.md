@@ -76,12 +76,19 @@ Es el límite de tasa de Google, no tu código. Espera un minuto, o cambia a
 
 ## Los ejercicios
 
+El taller son **dos horas**: unos 69 minutos de explicación y unos 51 de
+teclado. Los minutos de abajo son el bloque completo, charla incluida.
+
 | # | Archivo | Min | Qué construyes |
 |---|---|---|---|
-| 1 | `01_herramientas.py` | 20 | Una herramienta desde cero. El docstring **es** el prompt. |
-| 2 | `02_bajo_el_capo.py` | 10 | Qué hace `run_sync` por dentro. Por qué el costo crece. |
-| 3 | `03_delegacion.py` | 25 | **Orquestador + 2 subagentes.** El ejercicio central. |
-| 4 | `04_mi_mvp.py` | 15 | El esqueleto de tu propio MVP. |
+| 1 | `01_herramientas.py` | 18 | Una herramienta desde cero. El docstring **es** el prompt. |
+| 2 | `02_bajo_el_capo.py` | 14 | Qué hace `run_sync` por dentro. Por qué el costo crece. |
+| 3 | `03_delegacion.py` | 30 | **Orquestador + 2 subagentes.** El ejercicio central. |
+| 4 | `04_salida_estructurada.py` | 18 | `output_type`: el subagente devuelve un objeto, no prosa. El padre **comprueba**. |
+| 5 | `05_paralelo_y_fallos.py` | 15 | `asyncio.gather`, y que un subagente caído no mate la corrida. |
+| 6 | `06_mi_mvp.py` | 12 | El esqueleto de tu propio MVP. |
+
+Más 10 minutos de apertura al principio y 3 de cierre al final: 120 en total.
 
 Cada archivo trae sus tareas en el docstring de arriba. **Corre primero, lee
 después.**
@@ -90,8 +97,10 @@ después.**
 python ejercicios/01_herramientas.py
 ```
 
-`soluciones/` tiene la versión terminada de cada uno. Si te trabas, cópiala y
-sigue con el grupo — no pierdas veinte minutos en un typo.
+`soluciones/` tiene la versión terminada de los que se escriben (1, 3, 4 y 5).
+El 2 no lleva solución porque no hay código que escribir, y el 6 es tuyo.
+Si te trabas, cópiala y sigue con el grupo — no pierdas veinte minutos en un
+typo.
 
 ---
 
@@ -102,7 +111,8 @@ taller/
   config.py        modelo, límites de uso, manejo de errores
   herramientas.py  las funciones que los agentes ejecutan
 ejercicios/        lo que tú modificas
-soluciones/        la versión terminada (1 y 3)
+soluciones/        la versión terminada (1, 3, 4 y 5)
+presentacion/      el material del que presenta: libreto, diapositivas, guion
 sandbox/           archivos de juguete con un bug plantado
 verificar.py
 ```
