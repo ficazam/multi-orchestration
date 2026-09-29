@@ -70,7 +70,7 @@ GUION = [
     },
     {
         "titulo": "Apertura",
-        "min": "4 min",
+        "min": "10 min",
         "meta": "Encuadre. Que sepan que se llevan y por que no es un tema "
                 "de moda.",
         "cuerpo": [
@@ -95,7 +95,7 @@ GUION = [
     },
     {
         "titulo": "Ejercicio 1  &mdash;  la descripcion ES el prompt",
-        "min": "16 min",
+        "min": "18 min",
         "meta": "Que entiendan que el modelo no ve el codigo: ve el nombre, "
                 "el docstring y los tipos.",
         "cuerpo": [
@@ -128,7 +128,7 @@ GUION = [
     },
     {
         "titulo": "Ejercicio 2  &mdash;  que hace run_sync por debajo",
-        "min": "7 min",
+        "min": "14 min",
         "meta": "Desmitificar el bucle. Que sepan por que el costo crece mas "
                 "rapido que los pasos.",
         "cuerpo": [
@@ -165,7 +165,7 @@ GUION = [
     },
     {
         "titulo": "Ejercicio 3  &mdash;  el bucle multi-agente",
-        "min": "28 min  (EL CENTRAL)",
+        "min": "30 min  (EL CENTRAL)",
         "meta": "Que construyan un orquestador con dos subagentes y VEAN el "
                 "aislamiento de contexto en numeros.",
         "cuerpo": [
@@ -232,8 +232,81 @@ GUION = [
         ],
     },
     {
-        "titulo": "Ejercicio 4  &mdash;  el esqueleto de TU MVP",
-        "min": "10 min",
+        "titulo": "Ejercicio 4  &mdash;  la salida estructurada",
+        "min": "18 min",
+        "meta": "Que el subagente devuelva un objeto y el padre COMPRUEBE en "
+                "vez de creer.",
+        "cuerpo": [
+            ("di", "Hasta ahora el explorador devolvia prosa, y el "
+                   "orquestador tenia que creersela. \"No encontre la causa\" "
+                   "y \"la causa es X\" son los dos un string."),
+            ("haz", "Proyecta la clase Hallazgo y el output_type del Agent."),
+            ("di", "Con output_type, resultado.output ya no es un string: es "
+                   "un Hallazgo validado por Pydantic antes de que tu codigo "
+                   "lo vea."),
+            ("di", "Cuatro cosas cambian. El padre puede COMPROBAR &mdash; "
+                   "<b>if not hallazgo.causa</b> es una linea. El modelo ya "
+                   "no elige el formato: si no encaja, Pydantic AI lo hace "
+                   "reintentar. Se acaban los parseos. Y pesa menos en el "
+                   "historial del padre."),
+            ("di", "Y lo que mas me gusta: el esquema ES la instruccion. "
+                   "Agregas un campo y el modelo lo llena sin que toques el "
+                   "prompt. Es el ejercicio 1 otra vez, un nivel arriba."),
+            ("ojo", "Insiste en los campos opcionales: <b>causa</b> es "
+                    "opcional a proposito. Un campo obligatorio que el modelo "
+                    "no sabe es una alucinacion garantizada. Lo opcional le "
+                    "da permiso de no saber."),
+            ("haz", "Dales 7 minutos: escriben la comprobacion y agregan un "
+                    "campo."),
+            ("nota", "En MODO=test la causa sale NULA, asi que la rama de "
+                     "INCOMPLETO se ve sin gastar llave. Es una ventaja del "
+                     "ejercicio, no un defecto: senalalo."),
+            ("nota", "Los reintentos cuestan peticiones. Un esquema con 15 "
+                     "campos obligatorios y descripciones vagas reintenta "
+                     "tres veces por llamada. Pide lo que necesitas para "
+                     "decidir, nada mas."),
+        ],
+    },
+    {
+        "titulo": "Ejercicio 5  &mdash;  en paralelo, y cuando algo falla",
+        "min": "15 min",
+        "meta": "Que sepan paralelizar lo que no depende, y que un hijo "
+                "caido no les mate el demo.",
+        "cuerpo": [
+            ("di", "En el ejercicio 3 los subagentes iban en serie porque "
+                   "habia dependencia. Cuando no la hay, esperar al primero "
+                   "es tiempo regalado: asyncio.gather."),
+            ("haz", "Proyecta el gather. Senala que NO lleva await en cada "
+                    ".run(): gather los espera."),
+            ("ojo", "La trampa que hay que decir en voz alta: <b>el reloj "
+                    "baja, el gasto NO.</b> Y peor &mdash; dos rafagas "
+                    "simultaneas se acercan al limite de tasa mas rapido que "
+                    "dos espaciadas. Con cuota gratis, paralelizar de dos en "
+                    "dos, no de diez en diez."),
+            ("di", "Y en paralelo van los que LEEN. Dos escritores sobre el "
+                   "mismo archivo arrancando a la vez es una carrera."),
+            ("di", "Segunda mitad: los subagentes se caen. Si el hijo lanza "
+                   "una excepcion, se muere el padre y se muere la corrida. "
+                   "Y el sabado uno se va a caer."),
+            ("di", "La solucion ya la vieron en el ejercicio 1: devolver el "
+                   "error como TEXTO en vez de lanzarlo. Ahi era una funcion; "
+                   "aqui es un subagente entero. Misma idea."),
+            ("ojo", "AVISALES ANTES de que empiecen: hay que proteger las DOS "
+                    "delegaciones. El orquestador llama a en_serie primero, "
+                    "asi que si solo protegen en_paralelo, la corrida se "
+                    "sigue muriendo y van a jurar que su codigo no sirve."),
+            ("haz", "Dales 6 minutos: gather, despues descomentan el raise, "
+                    "ven morir la corrida, y la protegen."),
+            ("pregunta", "Si un subagente falla y el orquestador sigue, "
+                         "&iquest;quien decide si la respuesta final todavia "
+                         "sirve? &mdash; Respuesta: tu, en el prompt del "
+                         "orquestador. Es producto, no codigo. Si no se lo "
+                         "dices, se lo inventa."),
+        ],
+    },
+    {
+        "titulo": "Ejercicio 6  &mdash;  el esqueleto de TU MVP",
+        "min": "12 min",
         "meta": "Que salgan con una decision de arquitectura tomada, no con "
                 "codigo bonito.",
         "cuerpo": [
@@ -241,7 +314,7 @@ GUION = [
                    "de archivos del ejercicio 3: pongan lo que su equipo va a "
                    "construir de verdad."),
             ("haz", "Primero EN PAPEL, 5 minutos, sin tocar el teclado. Las "
-                    "cuatro preguntas del docstring."),
+                    "cuatro preguntas del docstring de 06_mi_mvp.py."),
             ("di", "La pregunta que importa de las cuatro es: por cada "
                    "subagente, &iquest;que herramientas <b>NO</b> tiene? Si no "
                    "puedes contestar eso, no sabes que estas construyendo."),
@@ -257,11 +330,13 @@ GUION = [
             ("ojo", "Si te queda corto el tiempo, este es el bloque que se "
                     "comprime: el archivo se lo llevan y lo siguen el sabado. "
                     "Lo que NO se comprime es el ejercicio 3."),
+            ("nota", "Este archivo se llama 06_mi_mvp.py. Se renumero cuando "
+                     "entraron los bloques 4 y 5."),
         ],
     },
     {
         "titulo": "Cierre",
-        "min": "5 min",
+        "min": "3 min",
         "meta": "Dos ideas que se llevan aunque olviden la sintaxis.",
         "cuerpo": [
             ("di", "Primera: <b>un subagente es una herramienta</b>, y su "
@@ -491,12 +566,13 @@ def construir():
                                      "antes de que entre nadie</i>"))
     f.append(tabla_dos_columnas(filas, e, ancho_izq=30))
     f.append(Paragraph(
-        "70 <b>con apertura y cierre dentro</b>. Los minutos del README suman "
-        "70 solo entre los cuatro ejercicios y no dejan nada para abrir ni "
-        "cerrar; el margen salio del 2, que no tiene codigo que escribir, y "
-        "del 4, que se termina el sabado. Se lo quedo el 3: seis tareas y un "
-        "subagente desde cero no caben en 25. Si el slot real es de 60, corta "
-        "el 4 &mdash; el 3 no se toca.", e["meta"]))
+        "120 <b>con apertura y cierre dentro</b>. De esos, unos 60 son de "
+        "charla y unos 46 de teclado; el resto son corridas, esperas y "
+        "preguntas. El libreto (libreto.pdf) lleva la cuenta exacta de las "
+        "palabras y la recalcula sola. Si el slot se acorta, el bloque que se "
+        "comprime es el 6 &mdash; se lo llevan para el sabado. El 3 no se "
+        "toca, y el 4 tampoco: la salida estructurada es lo que mas les "
+        "cambia el MVP por linea escrita.", e["meta"]))
 
     # --- bloques -----------------------------------------------------------
     for i, b in enumerate(GUION):

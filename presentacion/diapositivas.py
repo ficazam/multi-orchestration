@@ -52,8 +52,9 @@ DIAPOS = [
     {"tipo": "portada",
      "titulo": "Sistemas Multi-Agente<br/>y Function Calling",
      "subtitulo": "Hackathon FISC AI AGENTS  ·  UTP, salon 3-303",
-     "pie": "Hoy: un orquestador con subagentes. Y sales con el esqueleto "
-            "de tu MVP."},
+     "pie": "Dos horas. Sales con un orquestador con subagentes, salida "
+            "estructurada, paralelo y tolerancia a fallos &mdash; y con el "
+            "esqueleto de tu MVP."},
 
     {"tipo": "idea",
      "texto": "Un subagente es un agente normal,<br/>"
@@ -76,9 +77,18 @@ DIAPOS = [
             "compartida entre 30 se muere en el primer ejercicio.",
      "color": ALERTA},
 
+    {"tipo": "lista",
+     "titulo": "Un agente, 15 herramientas, 30 pasos.<br/>&iquest;Que se rompe?",
+     "items": ["<b>El contexto.</b> El paso 30 carga los 29 anteriores.",
+               "<b>Las decisiones.</b> Elegir entre 15 falla mas que entre 3.",
+               "<b>Los permisos.</b> Si tiene escribir, la tiene siempre.",
+               "<b>El costo.</b> El modelo caro listando carpetas."],
+     "pie": "Los subagentes son la respuesta a estas cuatro. No a una idea "
+            "de orden. Y hoy las medimos, no las afirmamos."},
+
     # --- 1 ----------------------------------------------------------------
     {"tipo": "seccion", "numero": "1", "titulo": "La descripcion ES el prompt",
-     "min": "16 min"},
+     "min": "18 min"},
 
     {"tipo": "lista",
      "titulo": "El modelo no ve tu codigo",
@@ -118,7 +128,7 @@ DIAPOS = [
 
     # --- 2 ----------------------------------------------------------------
     {"tipo": "seccion", "numero": "2", "titulo": "Que hace run_sync por debajo",
-     "min": "7 min"},
+     "min": "14 min"},
 
     {"tipo": "codigo",
      "titulo": "run_sync no es magia. Es este bucle.",
@@ -162,7 +172,7 @@ DIAPOS = [
 
     # --- 3 ----------------------------------------------------------------
     {"tipo": "seccion", "numero": "3", "titulo": "El bucle multi-agente",
-     "min": "28 min  ·  el central"},
+     "min": "30 min  ·  el central"},
 
     {"tipo": "codigo",
      "titulo": "El patron completo",
@@ -221,8 +231,105 @@ DIAPOS = [
      "color": ALERTA},
 
     # --- 4 ----------------------------------------------------------------
-    {"tipo": "seccion", "numero": "4", "titulo": "El esqueleto de TU MVP",
-     "min": "10 min"},
+    {"tipo": "seccion", "numero": "4", "titulo": "La salida estructurada",
+     "min": "18 min"},
+
+    {"tipo": "codigo",
+     "titulo": "El subagente devuelve un objeto, no prosa",
+     "lineas": ['class Hallazgo(BaseModel):',
+                '    archivo: str',
+                '    linea: int',
+                '    sintoma: str',
+                '    causa: str | None = None',
+                '',
+                'explorador = Agent(modelo(), output_type=Hallazgo, ...)'],
+     "pie": "resultado.output ya no es un string. Es un Hallazgo, validado "
+            "por Pydantic antes de que tu codigo lo vea."},
+
+    {"tipo": "lista",
+     "titulo": "Que cambia",
+     "items": ["<b>El padre puede comprobar.</b> <font face=\"Courier\">if "
+               "not hallazgo.causa</font> es una linea. Con prosa hace falta "
+               "otro modelo.",
+               "<b>El modelo ya no elige el formato.</b> Si no encaja, "
+               "Pydantic AI lo hace reintentar.",
+               "<b>Se acaban los parseos.</b> Ninguna regex sobre espanol a "
+               "las 2 a.m.",
+               "<b>Es mas barato.</b> Cuatro campos pesan menos que 80 "
+               "palabras."],
+     "pie": ""},
+
+    {"tipo": "idea",
+     "texto": "El esquema <b>ES</b> la instruccion.",
+     "pie": "Agregas un campo y el modelo lo llena sin que toques el prompt. "
+            "Antes la interfaz era el docstring; ahora tambien es el tipo."},
+
+    {"tipo": "idea",
+     "texto": "Un campo obligatorio que el modelo no sabe<br/>"
+              "es una <b>alucinacion garantizada.</b>",
+     "pie": "Por eso causa es opcional, y las instrucciones dicen \"si no la "
+            "encuentras, dejala en null\". Lo opcional le da permiso de no "
+            "saber.",
+     "color": ALERTA},
+
+    {"tipo": "turno",
+     "titulo": "Tu turno  ·  ejercicio 4",
+     "items": ["Corre. Mira el tipo que devuelve: Hallazgo, no str.",
+               "<b>Escribe la comprobacion:</b> si no hay causa, devuelve "
+               "INCOMPLETO y deja que el orquestador decida.",
+               "Agrega un campo al esquema. No toques el prompt.",
+               "Compara: len(str(hallazgo)) contra 400 caracteres de prosa."],
+     "pie": "python ejercicios/04_salida_estructurada.py"},
+
+    # --- 5 ----------------------------------------------------------------
+    {"tipo": "seccion", "numero": "5", "titulo": "En paralelo, y cuando algo falla",
+     "min": "15 min"},
+
+    {"tipo": "codigo",
+     "titulo": "Si no dependen uno del otro, no los esperes",
+     "lineas": ['a, b = await asyncio.gather(',
+                '    explorador_codigo.run(pregunta, usage=ctx.usage),',
+                '    explorador_docs.run(pregunta, usage=ctx.usage),',
+                ')'],
+     "pie": "Sin await en cada uno: gather los espera. Cuesta lo que el mas "
+            "lento, no la suma."},
+
+    {"tipo": "idea",
+     "texto": "El reloj baja.<br/><b>El gasto no.</b>",
+     "pie": "Son las mismas peticiones. Y peor: dos rafagas simultaneas se "
+            "acercan al limite de tasa mas rapido que dos espaciadas. "
+            "Paraleliza de dos en dos, no de diez en diez.",
+     "color": ALERTA},
+
+    {"tipo": "idea",
+     "texto": "Un hijo sin try/except<br/><b>mata la corrida entera.</b>",
+     "pie": "Y el sabado un subagente se va a caer: un 429, una ruta mala, un "
+            "timeout. Devuelve el error como TEXTO, igual que en el ejercicio "
+            "1. Si el padre lo LEE, decide.",
+     "color": ALERTA},
+
+    {"tipo": "lista",
+     "titulo": "Reintentar o rendirse bien",
+     "items": ["<b>Temporal</b> (429, timeout): reintenta, con espera.",
+               "<b>Permanente</b> (ruta mala, esquema imposible): rindete y "
+               "dilo. Reintentar quema dos peticiones en vez de una.",
+               "&iquest;Sirve una respuesta a medias? Eso es <b>producto</b>, "
+               "y va en el prompt del orquestador. Si no se lo dices, se lo "
+               "invents."],
+     "pie": "Toda delegacion va protegida. No la que crees riesgosa: todas."},
+
+    {"tipo": "turno",
+     "titulo": "Tu turno  ·  ejercicio 5",
+     "items": ["Corre. Mira los dos relojes: en serie y en paralelo.",
+               "<b>Completa en_paralelo con asyncio.gather.</b>",
+               "Descomenta el raise. Mira morir la corrida completa.",
+               "Atrapa el fallo y devuelvelo como texto. <b>En las DOS "
+               "delegaciones</b> — el orquestador llama a en_serie primero."],
+     "pie": "python ejercicios/05_paralelo_y_fallos.py"},
+
+    # --- 6 ----------------------------------------------------------------
+    {"tipo": "seccion", "numero": "6", "titulo": "El esqueleto de TU MVP",
+     "min": "12 min"},
 
     {"tipo": "lista",
      "titulo": "Primero en papel. Sin teclado.",
@@ -242,11 +349,11 @@ DIAPOS = [
             "y una traduccion mas donde se pierde informacion."},
 
     {"tipo": "turno",
-     "titulo": "Tu turno  ·  ejercicio 4",
+     "titulo": "Tu turno  ·  ejercicio 6",
      "items": ["Contesta las cuatro preguntas en papel.",
                "Llena los TODO con TU MVP, no con el ejemplo de archivos.",
                "Pon MIS_LIMITES antes de la primera corrida."],
-     "pie": "python ejercicios/04_mi_mvp.py   ·   esto se lo llevan y lo "
+     "pie": "python ejercicios/06_mi_mvp.py   ·   esto se lo llevan y lo "
             "siguen el sabado"},
 
     # --- cierre -----------------------------------------------------------
