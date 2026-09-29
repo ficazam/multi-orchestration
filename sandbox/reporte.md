@@ -1,0 +1,1 @@
+El bug reportado es que el inicio de sesión falla cuando la dirección de correo electrónico contiene letras mayúsculas.
