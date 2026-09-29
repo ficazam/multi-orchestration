@@ -1,8 +1,8 @@
 """
-EJERCICIO 4  --  el esqueleto de TU MVP
+EJERCICIO 6  --  el esqueleto de TU MVP
 =======================================
 
-    python ejercicios/04_mi_mvp.py
+    python ejercicios/06_mi_mvp.py
 
 Este archivo es tuyo. Sale del taller contigo y lo sigues el sabado.
 
@@ -135,7 +135,7 @@ OBJETIVO = "TODO: la tarea que tu MVP tiene que resolver."
 
 
 def main():
-    encabezado("Ejercicio 4 - mi MVP")
+    encabezado("Ejercicio 6 - mi MVP")
 
     if OBJETIVO.startswith("TODO"):
         print("\nTodavia no llenaste el OBJETIVO.")
