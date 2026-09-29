@@ -49,7 +49,7 @@ _cargar_env()
 # El modelo gratuito de Google AI Studio.
 # OJO: confirma el ID exacto en https://aistudio.google.com  --  Google
 # cambia los nombres seguido y un ID viejo da 404.
-MODELO_GEMINI = os.environ.get("MODELO_GEMINI", "google-gla:gemini-2.5-flash")
+MODELO_GEMINI = os.environ.get("MODELO_GEMINI", "google:gemini-2.5-flash")
 
 
 def modo():
@@ -65,11 +65,26 @@ def modelo():
         return TestModel()
 
     if m == "gemini":
-        if not (os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")):
+        google = os.environ.get("GOOGLE_API_KEY")
+        gemini = os.environ.get("GEMINI_API_KEY")
+
+        if not (gemini or google):
             print("ERROR: MODO=gemini pero no hay GEMINI_API_KEY.")
             print("       Saca una gratis en https://aistudio.google.com")
             print("       o usa MODO=test para trabajar sin llave.")
             sys.exit(1)
+
+        # Pydantic AI usa GOOGLE_API_KEY y DESCARTA GEMINI_API_KEY cuando
+        # las dos estan puestas. Es la causa numero uno de "la llave es
+        # correcta pero dice que es invalida": una GOOGLE_API_KEY vieja de
+        # otro proyecto tapando la nueva.
+        if google and gemini and google != gemini:
+            print("AVISO: GOOGLE_API_KEY y GEMINI_API_KEY son distintas.")
+            print("       Pydantic AI va a usar GOOGLE_API_KEY y a ignorar")
+            print("       GEMINI_API_KEY. Si la buena es la de GEMINI:")
+            print("         PowerShell:  Remove-Item Env:GOOGLE_API_KEY")
+            print("         bash:        unset GOOGLE_API_KEY")
+
         return MODELO_GEMINI
 
     print("ERROR: MODO='%s' no existe. Usa 'test' o 'gemini'." % m)
@@ -107,23 +122,41 @@ def correr(agente, prompt, limites=None, **kw):
     except Exception as e:
         texto = str(e)
 
+        def detalle():
+            """El error original. Sin esto no se puede depurar nada."""
+            recorte = texto if len(texto) <= 500 else texto[:500] + " [...]"
+            print("\nlo que dijo la libreria:")
+            print("  %s: %s" % (type(e).__name__, recorte))
+
         if "429" in texto or "RESOURCE_EXHAUSTED" in texto or "quota" in texto.lower():
             print("\n--- LIMITE DE TASA ---")
             print("Google te corto por pedir muy rapido. NO es tu codigo.")
             print("Espera unos 60 segundos y vuelve a correr.")
             print("Si sigue, cambia a MODO=test y sigue el taller igual.")
+            detalle()
             raise SystemExit(1)
 
         if "404" in texto and "model" in texto.lower():
             print("\n--- MODELO NO ENCONTRADO ---")
             print("El ID '%s' no existe o no esta en tu cuota." % MODELO_GEMINI)
             print("Revisa el nombre exacto en https://aistudio.google.com")
-            print("y exportalo:  export MODELO_GEMINI=google-gla:<id-correcto>")
+            print("y exportalo:  export MODELO_GEMINI=google:<id-correcto>")
+            print("O corre:  python listar_modelos.py")
+            detalle()
             raise SystemExit(1)
 
         if "API key" in texto or "401" in texto or "403" in texto:
             print("\n--- LLAVE INVALIDA ---")
-            print("Revisa GEMINI_API_KEY. Si no tienes, usa MODO=test.")
+            print("Corre esto, que te dice exactamente cual es el problema:")
+            print("    python listar_modelos.py")
+            print("")
+            print("Lo mas comun, en orden:")
+            print("  1. Tienes GOOGLE_API_KEY vieja tapando GEMINI_API_KEY.")
+            print("     Pydantic AI prefiere GOOGLE_API_KEY y descarta la otra.")
+            print("  2. La llave quedo mal copiada (sobra un espacio, falta")
+            print("     un caracter, o se pego con comillas).")
+            print("  3. La llave tiene restricciones de API o de IP.")
+            detalle()
             raise SystemExit(1)
 
         if "limit" in texto.lower() and "exceed" in texto.lower():
@@ -131,6 +164,7 @@ def correr(agente, prompt, limites=None, **kw):
             print("El agente llego al limite de peticiones o de herramientas.")
             print("Eso es UsageLimits haciendo su trabajo: evito un bucle sin techo.")
             print("Si es legitimo, sube el limite en taller/config.py.")
+            detalle()
             raise SystemExit(1)
 
         raise

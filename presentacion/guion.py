@@ -396,7 +396,7 @@ TRAMPAS = [
      "dice con todas sus letras."),
     ("404 model not found",
      "El ID del modelo cambio. Confirmar en aistudio.google.com y exportar "
-     "<b>MODELO_GEMINI=google-gla:&lt;id&gt;</b>. Revisa esto la manana del "
+     "<b>MODELO_GEMINI=google:&lt;id&gt;</b>. Revisa esto la manana del "
      "taller, no la semana antes."),
     ("\"Puse mi llave y sigue dando respuestas raras\"",
      "Esta en MODO=test. El encabezado de cada corrida imprime <b>modo:</b> "

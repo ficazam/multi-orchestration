@@ -67,6 +67,23 @@ funciona **antes** de gastar peticiones. Arma en `test`, prueba en `gemini`.
 
 ---
 
+## Confirma tu modelo antes del taller
+
+```bash
+python listar_modelos.py
+```
+
+Te dice si tu llave sirve y qué IDs de modelo puede llamar. Google renombra
+y retira modelos, así que un ID viejo da 404 — revísalo **la mañana del
+taller**, no la semana anterior. El prefijo es `google:` (antes era
+`google-gla:`, que ya no existe).
+
+Si la llave falla ahí, el problema no es el ejercicio. Lo más común es tener
+una `GOOGLE_API_KEY` vieja en el entorno: Pydantic AI la prefiere y
+descarta `GEMINI_API_KEY`.
+
+---
+
 ## Si te sale un 429
 
 Es el límite de tasa de Google, no tu código. Espera un minuto, o cambia a
