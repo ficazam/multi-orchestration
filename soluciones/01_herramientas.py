@@ -2,7 +2,7 @@
 SOLUCION 1  --  la descripcion ES el prompt
 ============================================
 
-    python ejercicios/01_herramientas.py
+    python soluciones/01_herramientas.py
 
 Ya sabes registrar herramientas con @agente.tool_plain. Lo que casi nadie
 te dijo en el taller pasado: el modelo NO ve tu codigo. Ve el nombre de la

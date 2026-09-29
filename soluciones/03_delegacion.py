@@ -2,7 +2,7 @@
 SOLUCION 3  --  el bucle multi-agente
 ======================================
 
-    python ejercicios/03_delegacion.py
+    python soluciones/03_delegacion.py
 
 ESTE ES EL EJERCICIO CENTRAL DEL TALLER. Lo que salgas construyendo aqui
 es el esqueleto de tu MVP.
